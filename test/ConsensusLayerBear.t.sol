@@ -4,13 +4,13 @@ pragma solidity ^0.8.13;
 import "forge-std/Test.sol";
 import "../src/ERC4883.sol";
 import "../src/ERC4883Composer.sol";
-import "../src/ExecutionLayerBear.sol";
+import "../src/ConsensusLayerBear.sol";
 import "./mocks/MockERC4883.sol";
 import "./mocks/MockERC721.sol";
 import {ERC721Holder} from "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 
-contract ExecutionLayerBearTest is Test, ERC721Holder {
-    ExecutionLayerBear public token;
+contract ConsensusLayerBearTest is Test, ERC721Holder {
+    ConsensusLayerBear public token;
     MockERC721 public erc721;
     MockERC4883 public background;
     MockERC4883 public accessory1;
@@ -18,8 +18,8 @@ contract ExecutionLayerBearTest is Test, ERC721Holder {
     MockERC4883 public accessory3;
     MockERC4883 public accessory4;
 
-    string public constant NAME = "Execution Layer Bear";
-    string public constant SYMBOL = "ELB";
+    string public constant NAME = "Consensus Layer Bear";
+    string public constant SYMBOL = "CLB";
     uint256 public constant OWNER_ALLOCATION = 119; // 119 Protocol Guild members
     uint256 public constant SUPPLY_CAP = 3675; // https://eips.ethereum.org/EIPS/eip-3675/
     uint256 constant PRICE = 0.0003675 ether;
@@ -29,7 +29,7 @@ contract ExecutionLayerBearTest is Test, ERC721Holder {
     address constant OTHER_ADDRESS = address(23);
 
     function setUp() public {
-        token = new ExecutionLayerBear();
+        token = new ConsensusLayerBear();
         erc721 = new MockERC721("ERC721", "NFT");
         background = new MockERC4883("Background", "BACK", 0, address(42), 10, 100);
         accessory1 = new MockERC4883("Accessory1", "ACC1", 0, address(42), 10, 100);
@@ -82,7 +82,7 @@ contract ExecutionLayerBearTest is Test, ERC721Holder {
         vm.prank(OWNER);
         token.setMergeBear(mergeBear);
 
-        vm.expectRevert(ExecutionLayerBear.MergeBearAlreadySet.selector);
+        vm.expectRevert(ConsensusLayerBear.MergeBearAlreadySet.selector);
         vm.prank(OWNER);
         token.setMergeBear(mergeBear);
     }
@@ -118,7 +118,7 @@ contract ExecutionLayerBearTest is Test, ERC721Holder {
 
         token.mint{value: PRICE}();
 
-        vm.expectRevert(ExecutionLayerBear.NotMergeBear.selector);
+        vm.expectRevert(ConsensusLayerBear.NotMergeBear.selector);
         vm.prank(nonMergeBear);
         token.setJwt(tokenId, consensusLayerTokenId);
     }

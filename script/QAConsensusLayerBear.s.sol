@@ -2,19 +2,19 @@
 pragma solidity ^0.8.13;
 
 import "forge-std/Script.sol";
-import "../src/ExecutionLayerBear.sol";
+import "../src/ConsensusLayerBear.sol";
 import "../src/NounsGlasses.sol";
 import "../src/Crown.sol";
 import "../src/Box.sol";
 import {ERC721Holder} from "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 
-contract QAExecutionLayerBearScript is Script, ERC721Holder {
+contract QAConsensusLayerBearScript is Script, ERC721Holder {
     function setUp() public {}
 
     function run() public {
         vm.startBroadcast();
 
-        ExecutionLayerBear token = new ExecutionLayerBear();
+        ConsensusLayerBear token = new ConsensusLayerBear();
         token.mint{value: token.price()}();
 
         Box background = new Box();
