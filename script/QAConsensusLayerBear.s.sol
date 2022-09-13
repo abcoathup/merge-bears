@@ -35,7 +35,6 @@ contract QAConsensusLayerBearScript is Script, ERC721Holder {
         crown.approve(address(token), 1);
         token.addAccessory(1, address(crown), 1);
 
-
         console.log(token.tokenURI(1));
 
         vm.stopBroadcast();

@@ -22,7 +22,7 @@ contract ConsensusLayerBearTest is Test, ERC721Holder {
     string public constant SYMBOL = "CLB";
     uint256 public constant OWNER_ALLOCATION = 119; // 119 Protocol Guild members
     uint256 public constant SUPPLY_CAP = 3675; // https://eips.ethereum.org/EIPS/eip-3675/
-    uint256 constant PRICE = 0.0003675 ether;
+    uint256 constant PRICE = 0.00042 ether;
     address constant OWNER = 0xeB10511109053787b3ED6cc02d5Cb67A265806cC;
 
     string constant TOKEN_NAME = "Token Name";
@@ -90,25 +90,21 @@ contract ConsensusLayerBearTest is Test, ERC721Holder {
     function testSetJwt() public {
         address mergeBear = address(42);
         uint256 tokenId = 1;
-        uint256 consensusLayerTokenId = 1;
+        uint256 executionLayerTokenId = 1;
 
         vm.prank(OWNER);
         token.setMergeBear(mergeBear);
 
         token.mint{value: PRICE}();
 
-        assertFalse(token.jwtSet(tokenId));
-
         vm.prank(mergeBear);
-        token.setJwt(tokenId, consensusLayerTokenId);
-
-        assertTrue(token.jwtSet(tokenId));
+        token.setJwt(tokenId, executionLayerTokenId);
     }
 
     function testSetJwtNotMergeBear(address nonMergeBear) public {
         address mergeBear = address(42);
         uint256 tokenId = 1;
-        uint256 consensusLayerTokenId = 1;
+        uint256 executionLayerTokenId = 1;
 
         vm.assume(nonMergeBear != address(0));
         vm.assume(nonMergeBear != mergeBear);
@@ -120,24 +116,37 @@ contract ConsensusLayerBearTest is Test, ERC721Holder {
 
         vm.expectRevert(ConsensusLayerBear.NotMergeBear.selector);
         vm.prank(nonMergeBear);
-        token.setJwt(tokenId, consensusLayerTokenId);
+        token.setJwt(tokenId, executionLayerTokenId);
     }
 
     function testSetJwtNonexistentToken(uint256 tokenId) public {
         address mergeBear = address(42);
-        uint256 consensusLayerTokenId = 1;
+        uint256 executionLayerTokenId = 1;
 
         vm.prank(OWNER);
         token.setMergeBear(mergeBear);
 
         vm.expectRevert(ERC4883.NonexistentToken.selector);
         vm.prank(mergeBear);
-        token.setJwt(tokenId, consensusLayerTokenId);
+        token.setJwt(tokenId, executionLayerTokenId);
     }
 
-    function testJwtSetNonexistentToken(uint256 tokenId) public {
-        vm.expectRevert(ERC4883.NonexistentToken.selector);
-        token.jwtSet(tokenId);
+    function testSetJwtAlreadySet() public {
+        address mergeBear = address(42);
+        uint256 tokenId = 1;
+        uint256 executionLayerTokenId = 1;
+
+        vm.prank(OWNER);
+        token.setMergeBear(mergeBear);
+
+        token.mint{value: PRICE}();
+
+        vm.prank(mergeBear);
+        token.setJwt(tokenId, executionLayerTokenId);
+
+        vm.expectRevert(ConsensusLayerBear.JwtAlreadySet.selector);
+        vm.prank(mergeBear);
+        token.setJwt(tokenId, executionLayerTokenId);
     }
 
     function testClientIdNonexistentToken(uint256 tokenId) public {

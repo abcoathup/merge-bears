@@ -92,7 +92,7 @@ abstract contract ERC4883 is ERC721, Ownable, IERC4883 {
         ownerMinted = true;
     }
 
-    function _mint(address to) private {
+    function _mint(address to) internal {
         unchecked {
             totalSupply++;
         }

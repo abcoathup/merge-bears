@@ -3,6 +3,7 @@ pragma solidity ^0.8.13;
 
 import {ERC4883Composer} from "./ERC4883Composer.sol";
 import {IERC4883} from "./IERC4883.sol";
+import {ERC4883} from "./ERC4883.sol";
 import {Colours} from "./Colours.sol";
 import {EthereumClients} from "./EthereumClients.sol";
 import {Base64} from "@openzeppelin/contracts/utils//Base64.sol";
@@ -10,11 +11,12 @@ import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 import {IERC165} from "@openzeppelin/contracts/interfaces/IERC165.sol";
 import {IERC721Metadata} from "@openzeppelin/contracts/interfaces/IERC721Metadata.sol";
 import {ERC721Holder} from "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
+import {IClientBear} from "./IClientBear.sol";
 
 // ░█▀▀░█░█░█▀▀░█▀▀░█░█░▀█▀░▀█▀░█▀█░█▀█░░░█░░░█▀█░█░█░█▀▀░█▀▄░░░█▀▄░█▀▀░█▀█░█▀▄
 // ░█▀▀░▄▀▄░█▀▀░█░░░█░█░░█░░░█░░█░█░█░█░░░█░░░█▀█░░█░░█▀▀░█▀▄░░░█▀▄░█▀▀░█▀█░█▀▄
 // ░▀▀▀░▀░▀░▀▀▀░▀▀▀░▀▀▀░░▀░░▀▀▀░▀▀▀░▀░▀░░░▀▀▀░▀░▀░░▀░░▀▀▀░▀░▀░░░▀▀░░▀▀▀░▀░▀░▀░▀
-contract ExecutionLayerBear is ERC4883Composer, Colours, EthereumClients, ERC721Holder {
+contract ExecutionLayerBear is IClientBear, ERC4883Composer, Colours, EthereumClients, ERC721Holder {
     /// ERRORS
 
     // Thrown when Merge Bear already set
@@ -23,21 +25,21 @@ contract ExecutionLayerBear is ERC4883Composer, Colours, EthereumClients, ERC721
     // Thrown when not the Merge Bear
     error NotMergeBear();
 
+    // Thrown when JWT already set
+    error JwtAlreadySet();
+
     /// EVENTS
 
     mapping(uint256 => uint256) private _jwt;
     address private _mergeBear;
 
     constructor()
-        ERC4883Composer(
-            "Execution Layer Bear",
-            "ELB",
-            0.00042 ether,
-            0xeB10511109053787b3ED6cc02d5Cb67A265806cC,
-            119,
-            3675
-        )
+        ERC4883Composer("Execution Layer Bear", "ELB", 0.00042 ether, 0xeB10511109053787b3ED6cc02d5Cb67A265806cC, 119, 3675)
     {}
+
+    function supportsInterface(bytes4 interfaceId) public view virtual override (ERC4883, IERC165) returns (bool) {
+        return interfaceId == type(IClientBear).interfaceId || super.supportsInterface(interfaceId);
+    }
 
     function setMergeBear(address mergeBear_) public onlyOwner {
         if (_mergeBear != address(0)) {
@@ -47,7 +49,7 @@ contract ExecutionLayerBear is ERC4883Composer, Colours, EthereumClients, ERC721
         _mergeBear = mergeBear_;
     }
 
-    function setJwt(uint256 tokenId, uint256 consensusLayerTokenId) public {
+    function setJwt(uint256 tokenId, uint256 clientTokenId) public {
         if (msg.sender != _mergeBear) {
             revert NotMergeBear();
         }
@@ -56,15 +58,11 @@ contract ExecutionLayerBear is ERC4883Composer, Colours, EthereumClients, ERC721
             revert NonexistentToken();
         }
 
-        _jwt[tokenId] = consensusLayerTokenId;
-    }
-
-    function jwtSet(uint256 tokenId) public view returns (bool) {
-        if (!_exists(tokenId)) {
-            revert NonexistentToken();
+        if (_jwt[tokenId] != 0) {
+            revert JwtAlreadySet();
         }
 
-        return (_jwt[tokenId] != 0);
+        _jwt[tokenId] = clientTokenId;
     }
 
     function clientId(uint256 tokenId) public view returns (uint8) {
