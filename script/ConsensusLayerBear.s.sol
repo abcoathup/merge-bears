@@ -11,7 +11,7 @@ contract ConsensusLayerBearScript is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
 
-        new ConsensusLayerBear();
+        ConsensusLayerBear token = new ConsensusLayerBear();
 
         vm.stopBroadcast();
     }
