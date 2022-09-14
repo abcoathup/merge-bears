@@ -64,7 +64,7 @@ contract MergeBearTest is Test, ERC721Holder {
     function testWithdraw(uint96 amount) public {
         vm.assume(amount >= PRICE);
         vm.assume(amount < 42 ether);
-        
+
         address recipient = address(2);
 
         elToken.mint{value: elToken.price()}();
@@ -77,16 +77,16 @@ contract MergeBearTest is Test, ERC721Holder {
         assertEq(address(token).balance, 0 ether);
     }
 
-        // // Set JWT
-        // consensusLayerBear.setJwt(consensusLayerBearTokenId, executionLayerBearTokenId);
-        // executionLayerBear.setJwt(executionLayerBearTokenId, consensusLayerBearTokenId);
+    // // Set JWT
+    // consensusLayerBear.setJwt(consensusLayerBearTokenId, executionLayerBearTokenId);
+    // executionLayerBear.setJwt(executionLayerBearTokenId, consensusLayerBearTokenId);
 
     function testMintNotExecutionLayerBearOwner() public {
         elToken.mint{value: elToken.price()}();
         clToken.mint{value: clToken.price()}();
 
         elToken.safeTransferFrom(address(this), OTHER_ADDRESS, 1);
-        
+
         vm.expectRevert(MergeBear.NotExecutionLayerBearOwner.selector);
         token.mint{value: PRICE}(1, 1);
     }
@@ -124,6 +124,4 @@ contract MergeBearTest is Test, ERC721Holder {
         vm.expectRevert(ConsensusLayerBear.JwtAlreadySet.selector);
         token.mint{value: PRICE}(2, 1);
     }
-
-
 }

@@ -19,9 +19,7 @@ contract NounsGlasses is ERC4883, Colours {
 
     /// EVENTS
 
-    constructor()
-        ERC4883("Nouns Glasses", "NGLS", 0.000202 ether, 200, 2020)
-    {}
+    constructor() ERC4883("Nouns Glasses", "NGLS", 0.000202 ether, 200, 2020) {}
 
     function _generateDescription(uint256 tokenId) internal view virtual override returns (string memory) {
         return string.concat(

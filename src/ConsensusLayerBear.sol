@@ -33,9 +33,7 @@ contract ConsensusLayerBear is IClientBear, ERC4883Composer, Colours, EthereumCl
     mapping(uint256 => uint256) private _jwt;
     address private _mergeBear;
 
-    constructor()
-        ERC4883Composer("Consensus Layer Bear", "CLB", 0.00042 ether, 119, 3675)
-    {}
+    constructor() ERC4883Composer("Consensus Layer Bear", "CLB", 0.00042 ether, 119, 3675) {}
 
     function supportsInterface(bytes4 interfaceId) public view virtual override (ERC4883, IERC165) returns (bool) {
         return interfaceId == type(IClientBear).interfaceId || super.supportsInterface(interfaceId);
