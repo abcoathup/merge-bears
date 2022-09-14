@@ -12,12 +12,11 @@ contract ERC4883Test is Test, ERC721Holder {
     string public constant NAME = "NAME";
     string public constant SYMBOL = "SYMBOL";
     uint256 public constant PRICE = 0.1 ether;
-    address public constant OWNER = address(42);
     uint256 public constant OWNER_ALLOCATION = 100;
     uint256 public constant SUPPLY_CAP = 1000;
 
     function setUp() public {
-        token = new MockERC4883(NAME, SYMBOL, PRICE, OWNER, OWNER_ALLOCATION, SUPPLY_CAP);
+        token = new MockERC4883(NAME, SYMBOL, PRICE, OWNER_ALLOCATION, SUPPLY_CAP);
     }
 
     function testMetadata() public {
@@ -27,7 +26,7 @@ contract ERC4883Test is Test, ERC721Holder {
     }
 
     function testOwner() public {
-        assertEq(token.owner(), OWNER);
+        assertEq(token.owner(), address(this));
     }
 
     function testSupportsERC4883() public {
@@ -106,7 +105,6 @@ contract ERC4883Test is Test, ERC721Holder {
         vm.assume(amount >= PRICE);
         token.mint{value: amount}();
 
-        vm.prank(OWNER);
         token.withdraw(recipient);
 
         assertEq(address(recipient).balance, amount);
@@ -117,7 +115,7 @@ contract ERC4883Test is Test, ERC721Holder {
         address recipient = address(1);
 
         vm.assume(amount >= PRICE);
-        vm.assume(nonOwner != OWNER);
+        vm.assume(nonOwner != address(this));
         vm.assume(nonOwner != address(0));
         token.mint{value: amount}();
 
@@ -132,7 +130,6 @@ contract ERC4883Test is Test, ERC721Holder {
     /// Owner Mint
     function testOwnerMint(address to) public {
         vm.assume(to != address(0));
-        vm.prank(OWNER);
         token.ownerMint(to);
 
         assertEq(token.totalSupply(), token.ownerAllocation());
@@ -143,7 +140,7 @@ contract ERC4883Test is Test, ERC721Holder {
 
     function testOwnerMintWhenNotOwner(address nonOwner, address to) public {
         vm.assume(to != address(0));
-        vm.assume(nonOwner != OWNER);
+        vm.assume(nonOwner != address(this));
         vm.assume(nonOwner != address(0));
 
         vm.prank(nonOwner);
@@ -156,10 +153,8 @@ contract ERC4883Test is Test, ERC721Holder {
 
     function testOwnerMintWhenOwnerAlreadyMinted(address to) public {
         vm.assume(to != address(0));
-        vm.prank(OWNER);
         token.ownerMint(to);
 
-        vm.prank(OWNER);
         vm.expectRevert(ERC4883.OwnerAlreadyMinted.selector);
         token.ownerMint(to);
 
@@ -174,7 +169,6 @@ contract ERC4883Test is Test, ERC721Holder {
             token.mint{value: PRICE}();
         }
 
-        vm.prank(OWNER);
         token.ownerMint(to);
 
         assertEq(token.ownerOf(token.totalSupply()), to);

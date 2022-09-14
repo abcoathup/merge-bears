@@ -31,11 +31,11 @@ contract ConsensusLayerBearTest is Test, ERC721Holder {
     function setUp() public {
         token = new ConsensusLayerBear();
         erc721 = new MockERC721("ERC721", "NFT");
-        background = new MockERC4883("Background", "BACK", 0, address(42), 10, 100);
-        accessory1 = new MockERC4883("Accessory1", "ACC1", 0, address(42), 10, 100);
-        accessory2 = new MockERC4883("Accessory2", "ACC2", 0, address(42), 10, 100);
-        accessory3 = new MockERC4883("Accessory3", "ACC3", 0, address(42), 10, 100);
-        accessory4 = new MockERC4883("Accessory4", "ACC4", 0, address(42), 10, 100);
+        background = new MockERC4883("Background", "BACK", 0, 10, 100);
+        accessory1 = new MockERC4883("Accessory1", "ACC1", 0, 10, 100);
+        accessory2 = new MockERC4883("Accessory2", "ACC2", 0, 10, 100);
+        accessory3 = new MockERC4883("Accessory3", "ACC3", 0, 10, 100);
+        accessory4 = new MockERC4883("Accessory4", "ACC4", 0, 10, 100);
     }
 
     function testMetadata() public {
@@ -45,7 +45,7 @@ contract ConsensusLayerBearTest is Test, ERC721Holder {
     }
 
     function testOwner() public {
-        assertEq(token.owner(), OWNER);
+        assertEq(token.owner(), address(this));
     }
 
     function testSupportsERC4883() public {
@@ -58,7 +58,6 @@ contract ConsensusLayerBearTest is Test, ERC721Holder {
         vm.assume(amount >= PRICE);
         token.mint{value: amount}();
 
-        vm.prank(OWNER);
         token.withdraw(recipient);
 
         assertEq(address(recipient).balance, amount);
@@ -66,7 +65,7 @@ contract ConsensusLayerBearTest is Test, ERC721Holder {
     }
 
     function testSetMergeBearNotOwner(address nonOwner) public {
-        vm.assume(nonOwner != OWNER);
+        vm.assume(nonOwner != address(this));
         vm.assume(nonOwner != address(0));
 
         address mergeBear = address(42);
@@ -79,11 +78,9 @@ contract ConsensusLayerBearTest is Test, ERC721Holder {
     function testSetMergeBearAlreadySet(address mergeBear) public {
         vm.assume(mergeBear != address(0));
 
-        vm.prank(OWNER);
         token.setMergeBear(mergeBear);
 
         vm.expectRevert(ConsensusLayerBear.MergeBearAlreadySet.selector);
-        vm.prank(OWNER);
         token.setMergeBear(mergeBear);
     }
 
@@ -92,7 +89,6 @@ contract ConsensusLayerBearTest is Test, ERC721Holder {
         uint256 tokenId = 1;
         uint256 executionLayerTokenId = 1;
 
-        vm.prank(OWNER);
         token.setMergeBear(mergeBear);
 
         token.mint{value: PRICE}();
@@ -109,7 +105,6 @@ contract ConsensusLayerBearTest is Test, ERC721Holder {
         vm.assume(nonMergeBear != address(0));
         vm.assume(nonMergeBear != mergeBear);
 
-        vm.prank(OWNER);
         token.setMergeBear(mergeBear);
 
         token.mint{value: PRICE}();
@@ -123,7 +118,6 @@ contract ConsensusLayerBearTest is Test, ERC721Holder {
         address mergeBear = address(42);
         uint256 executionLayerTokenId = 1;
 
-        vm.prank(OWNER);
         token.setMergeBear(mergeBear);
 
         vm.expectRevert(ERC4883.NonexistentToken.selector);
@@ -136,7 +130,6 @@ contract ConsensusLayerBearTest is Test, ERC721Holder {
         uint256 tokenId = 1;
         uint256 executionLayerTokenId = 1;
 
-        vm.prank(OWNER);
         token.setMergeBear(mergeBear);
 
         token.mint{value: PRICE}();

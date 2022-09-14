@@ -9,11 +9,10 @@ contract MockERC4883 is ERC4883 {
         string memory name_,
         string memory symbol_,
         uint256 price_,
-        address owner_,
         uint256 ownerAllocation_,
         uint256 supplyCap_
     )
-        ERC4883(name_, symbol_, price_, owner_, ownerAllocation_, supplyCap_)
+        ERC4883(name_, symbol_, price_, ownerAllocation_, supplyCap_)
     {}
 
     function _generateDescription(uint256 tokenId) internal view virtual override returns (string memory) {

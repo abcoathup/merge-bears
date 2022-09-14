@@ -43,7 +43,7 @@ contract MergeBear is ERC4883Composer, Colours, EthereumClients, ERC721Holder {
 
     // Supply is controlled by supply of Consensus & Execution Layer Bears
     constructor(address consensusLayerBear_, address executionLayerBear_)
-        ERC4883Composer("Merge Bear", "MB", 0.00042 ether, 0xeB10511109053787b3ED6cc02d5Cb67A265806cC, 0, 0)
+        ERC4883Composer("Merge Bear", "MB", 0.00042 ether, 0, 0)
     {
         consensusLayerBear = IClientBear(consensusLayerBear_);
 
@@ -207,7 +207,7 @@ contract MergeBear is ERC4883Composer, Colours, EthereumClients, ERC721Holder {
     }
 
     function _generateExecutionClient(uint256 tokenId) internal view returns (string memory) {
-        return consensusLayerClients[_mergeData[tokenId].executionClientId];
+        return executionLayerClients[_mergeData[tokenId].executionClientId];
     }
 
     function _generateConsensusColour(uint256 tokenId) internal view returns (string memory) {
