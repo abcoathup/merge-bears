@@ -129,15 +129,20 @@ contract ExecutionLayerBear is IClientBear, ERC4883Composer, Colours, EthereumCl
             '<path d="M215.622 195.687C226.175 185.133 255.491 189.824 260.182 198.032C248.455 209.758 227.348 207.413 215.622 195.687Z" fill="black" />'
             '<path d="M221.485 228.521C242.828 237.607 245.499 236.723 263.7 228.521" fill="none" />' "</g>"
             '<circle cx="194.788" cy="165.645" r="10" fill="black"/>'
-            '<circle cx="286.599" cy="166.99" r="10" fill="black"/>' '<g stroke="',
+            '<circle cx="286.599" cy="166.99" r="10" fill="black"/>'
+            // Ethereum Logo
+            '<g stroke="',
             colourValue,
-            '" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" fill="none">'
-            '<path d="M287.216 286L286.968 286.843V311.308L287.216 311.556L298.572 304.843L287.216 286Z" />'
-            '<path d="M287.216 286L275.86 304.843L287.216 311.556V299.681V286Z" />'
-            '<path d="M287.216 313.706L287.076 313.877V322.592L287.216 323L298.579 306.997L287.216 313.706Z" />'
-            '<path d="M287.216 323V313.706L275.86 306.997L287.216 323Z" />'
-            '<path d="M287.216 311.556L298.572 304.843L287.216 299.681V311.556Z" />'
-            '<path d="M275.86 304.843L287.216 311.556V299.681L275.86 304.843Z" />' "</g>" "</g>"
+            '" stroke-width="2.28109" stroke-linecap="round" stroke-linejoin="round" fill="none">'
+            '<path d="M286.732 276L286.367 277.242V313.288L286.732 313.653L303.464 303.763L286.732 276Z" />'
+            '<path d="M286.732 276L270 303.763L286.732 313.653V296.158V276Z" />'
+            '<path d="M286.732 313.653L303.464 303.763L286.732 296.158V313.653Z" />'
+            '<path d="M270 303.763L286.732 313.653V296.158L270 303.763Z" />' "</g>" '<g stroke="',
+            colourValue,
+            '" stroke-width="2.28109" stroke-linecap="round" stroke-linejoin="round" fill="none">'
+            '<path d="M286.732 330.514V316.821L270 306.936L286.732 330.514Z" />'
+            '<path d="M286.732 316.821L286.526 317.072V329.913L286.732 330.514L303.474 306.936L286.732 316.821Z" />'
+            "</g>" "</g>"
         );
 
         // Execution Layer Bear SVG
